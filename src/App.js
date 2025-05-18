@@ -15,6 +15,7 @@ import Alert from './components/Alert';
 import AnomalyFeature from './components/Anomaly';
 import NewsPage from './components/news';
 import axios from "axios";
+import Predict from "./components/Prediction";
 
 function App() {
   
@@ -65,7 +66,9 @@ function App() {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/alert" element={<Alert />} />
             <Route path="/anomaly" element={<AnomalyFeature />} />
+            <Route path="/predict" element={<Predict />} />
             <Route path="*" element={<div>Page Not Found</div>} />
+
           </Routes>
         </main>
       </div>

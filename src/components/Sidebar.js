@@ -35,6 +35,13 @@ const Sidebar = () => {
             <FileText size={20} /> News
           </Link>
         </li>
+         <li className={isActive('/predict') ? 'active' : ''}>
+          <Link to="/predict">
+            <Droplet size={20} /> Water Level Prediciton
+          </Link>
+        </li>
+         
+        
       </ul>
       <div className="sidebar-footer">
         <div className="water-drop-animation">
