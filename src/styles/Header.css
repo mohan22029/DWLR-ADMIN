@@ -1,0 +1,53 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #90d9e3;
+  border-bottom: 2px solid #0097a7;
+  flex-wrap: wrap;
+}
+
+.header-left h1 {
+  margin: 0;
+  color: #00796b;
+}
+
+.header-left p {
+  margin: 4px;
+  margin-left: 10px;
+  font-size: 20px;
+  color: #555;
+}
+
+.header-right {
+  max-width: 40%;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quote-of-the-day {
+  font-style: italic;
+  font-size: 25px;
+  color: #ffffff;
+  background-color: #009688;
+  padding: 25px 100px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #26a69a, 0 0 20px #26a69a;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 8px #26a69a;
+  }
+  to {
+    box-shadow: 0 0 40px #26a69a, 0 0 30px #26a69a;
+  }
+}
+
+.theme-toggle {
+  flex-shrink: 0;
+}

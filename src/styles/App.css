@@ -1,0 +1,77 @@
+
+
+/* Light mode default */
+body, .app {
+  background-color: #f8f9fa;
+  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Sidebar light mode */
+.sidebar {
+  background-color: #1f2a40;
+  color: white;
+}
+
+/* Dark mode overrides */
+.app.dark {
+  background-color: #121212;
+  color: #eee;
+}
+
+.app.dark .sidebar {
+  background-color: #222b3a;
+  color: #ddd;
+}
+
+.app.dark .dashboard {
+  background-color: #181818;
+}
+
+.app.dark .card, .app.dark .chart-container {
+  background-color: #2c2c2c;
+  color: #ddd;
+  box-shadow: none;
+  border: 1px solid #444;
+}
+
+/* Example for buttons */
+.app.dark button {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.app.dark button:hover {
+  background-color: #555;
+}
+
+/* Add transitions for smooth effect */
+.app, .sidebar, .dashboard, .card, button {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+
+/* src/styles/App.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f9fb;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dashboard {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+
+
