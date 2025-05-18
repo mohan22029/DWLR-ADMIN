@@ -1,116 +1,70 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Box, Typography } from "@mui/material";
+import axios from "axios";
 
-// Fix for default marker icons
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
-
-const MapView = ({ data }) => {
+const MapView = () => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
-
-  console.log("MapView rendered with data:", data);
+  const [dwlrs, setDwlrs] = useState([]);
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) {
-      console.log("Map not initialized: ", { mapRef: !!mapRef.current, mapInstance: !!mapInstanceRef.current });
-      return;
-    }
-
-    console.log("Initializing map");
-    mapInstanceRef.current = L.map(mapRef.current, {
-      center: [20.5937, 78.9629],
-      zoom: 5,
-      scrollWheelZoom: false,
-    });
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(mapInstanceRef.current);
-
-    return () => {
-      if (mapInstanceRef.current) {
-        console.log("Cleaning up map");
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
+    const fetchDWLRData = async () => {
+      try {
+        const response = await axios.get("https://mock-api-jsia.onrender.com/DWLR_DATA");
+        setDwlrs(response.data);
+      } catch (error) {
+        console.error("Error fetching DWLR data:", error);
       }
     };
+
+    fetchDWLRData();
   }, []);
 
   useEffect(() => {
-    if (!mapInstanceRef.current || !data) {
-      console.log("No map instance or data:", { mapInstance: !!mapInstanceRef.current, data });
-      return;
-    }
+    if (!mapRef.current || mapInstanceRef.current) return;
 
-    console.log("Updating markers with data:", data);
-    mapInstanceRef.current.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        mapInstanceRef.current.removeLayer(layer);
-      }
+    const map = L.map(mapRef.current, {
+      center: [20.5937, 78.9629], // Center of India
+      zoom: 5,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+      boxZoom: false,
+      dragging: true,
+      zoomControl: true,
     });
 
-    data.forEach((item) => {
-      if (item.lat && item.lng) {
-        const marker = L.marker([item.lat, item.lng], {
-          icon: L.icon({
-            iconUrl: item.anomaly
-              ? "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png"
-              : "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-            shadowSize: [41, 41],
-          }),
-        }).addTo(mapInstanceRef.current);
+    mapInstanceRef.current = map;
 
-        const avgWaterLevel = data.length
-          ? (data.reduce((sum, item) => sum + (item.water_level || 0), 0) / data.length).toFixed(2)
-          : "N/A";
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: "abcd",
+      maxZoom: 19,
+    }).addTo(map);
+  }, []);
 
-        const popupContent = `
-          <div style="font-family: 'Poppins', sans-serif; color: #1e293b;">
-            <h3 style="margin: 0 0 10px; font-size: 1.1rem; color: #3b82f6;">DWLR Location</h3>
-            <p style="margin: 5px 0;"><strong>ID:</strong> ${item.id || "N/A"}</p>
-            <p style="margin: 5px 0;"><strong>Water Level:</strong> ${item.water_level || "N/A"} m</p>
-            <p style="margin: 5px 0;"><strong>Average Water Level:</strong> ${avgWaterLevel} m</p>
-            <p style="margin: 5px 0;"><strong>Anomaly:</strong> ${item.anomaly ? "Yes" : "No"}</p>
-            <p style="margin: 5px 0;"><strong>Timestamp:</strong> ${item.timestamp || "N/A"}</p>
-            <p style="margin: 5px 0;"><strong>Location:</strong> (${item.lat.toFixed(4)}, ${item.lng.toFixed(4)})</p>
-          </div>
-        `;
+  useEffect(() => {
+    if (!mapInstanceRef.current || dwlrs.length === 0) return;
 
-        marker.bindPopup(popupContent, {
-          maxWidth: 300,
-          minWidth: 200,
-        });
+    dwlrs.forEach((d) => {
+      if (d.latitude && d.longitude) {
+        L.marker([d.latitude, d.longitude])
+          .addTo(mapInstanceRef.current)
+          .bindPopup(
+            `<b>${d.location}</b><br/>Water Level: ${d.water_level} m<br/>Status: ${d.status}`
+          );
       }
     });
-  }, [data]);
+  }, [dwlrs]);
 
   return (
-    <Box
-      className="chart-container"
-      sx={{
-        height: "300px", // Consistent height for the row
-        flex: 1,
-        borderRadius: "12px",
-        overflow: "hidden",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.6)",
-      }}
-    >
-      <Typography variant="h6">
-        DWLR Locations
-      </Typography>
-      <div ref={mapRef} style={{ height: "calc(100% - 40px)", width: "100%", minHeight: "260px" }} />
-    </Box>
+    <div
+      id="map"
+      ref={mapRef}
+      style={{ height: "400px", width: "100%", borderRadius: "10px", marginTop: "10px" }}
+    />
   );
 };
 

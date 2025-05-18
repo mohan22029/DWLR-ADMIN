@@ -1,53 +1,203 @@
+/* src/styles/Header.css */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  background-color: #90d9e3;
-  border-bottom: 2px solid #0097a7;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(10, 35, 66, 0.8) 0%, rgba(44, 87, 132, 0.8) 100%);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   flex-wrap: wrap;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(99, 173, 242, 0.3);
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-left {
+  flex: 1;
+  min-width: 250px;
 }
 
 .header-left h1 {
   margin: 0;
-  color: #00796b;
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ffffff, #63ADF2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.header-left h1::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #4ECDC4, transparent);
+  border-radius: 3px;
 }
 
 .header-left p {
-  margin: 4px;
-  margin-left: 10px;
-  font-size: 20px;
-  color: #555;
+  margin: 1rem 0 0;
+  font-size: 1.1rem;
+  color: #a3c2e3;
+  font-weight: 500;
 }
 
 .header-right {
-  max-width: 40%;
-  text-align: right;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .quote-of-the-day {
+  position: relative;
   font-style: italic;
-  font-size: 25px;
-  color: #ffffff;
-  background-color: #009688;
-  padding: 25px 100px;
+  font-size: 1.1rem;
+  color: #e0f7fa;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(99, 173, 242, 0.2) 100%);
+  padding: 1.2rem 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 0 10px #26a69a, 0 0 20px #26a69a;
-  animation: glow 2s ease-in-out infinite alternate;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-left: 3px solid #4ECDC4;
+  max-width: 400px;
+  margin: 0;
+  animation: pulse 3s ease-in-out infinite alternate;
+  transition: all 0.3s ease;
 }
 
-@keyframes glow {
-  from {
-    box-shadow: 0 0 8px #26a69a;
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
-  to {
-    box-shadow: 0 0 40px #26a69a, 0 0 30px #26a69a;
+  50% {
+    box-shadow: 0 4px 20px rgba(78, 205, 196, 0.3);
   }
 }
+
+.quote-of-the-day:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.quote-of-the-day::before {
+  content: '"';
+  position: absolute;
+  top: -15px;
+  left: 10px;
+  font-size: 3rem;
+  color: rgba(78, 205, 196, 0.4);
+  font-family: serif;
+}
+
+.quote-of-the-day::after {
+  content: '"';
+  position: absolute;
+  bottom: -40px;
+  right: 10px;
+  font-size: 3rem;
+  color: rgba(78, 205, 196, 0.4);
+  font-family: serif;
+}
+
 
 .theme-toggle {
   flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .header {
+    padding: 1.2rem;
+  }
+  
+  .header-left h1 {
+    font-size: 1.8rem;
+  }
+  
+  .quote-of-the-day {
+    font-size: 1rem;
+    padding: 1rem 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-right {
+    margin-top: 1.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .quote-of-the-day {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-left h1 {
+    font-size: 1.6rem;
+  }
+  
+  .header-left p {
+    font-size: 1rem;
+  }
+  
+  .quote-of-the-day {
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+  }
+  
+  .header-right {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Light mode adjustments */
+.light .header {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(224, 247, 250, 0.8) 100%);
+  border: 1px solid rgba(44, 87, 132, 0.1);
+}
+
+.light .header-left h1 {
+  background: linear-gradient(90deg, #0a2342, #2c5784);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.light .header-left p {
+  color: #2c5784;
+}
+
+.light .quote-of-the-day {
+  color: #0a2342;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(99, 173, 242, 0.1) 100%);
+  border-left: 3px solid #4ECDC4;
 }

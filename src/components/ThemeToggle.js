@@ -1,33 +1,21 @@
-import React, { useContext } from 'react';
-import { IconButton } from '@mui/material';
-import { ColorModeContext } from './theme'; // Verify this path!
-import { DarkMode, LightMode } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
+import React from 'react';
+import '../styles/ThemeToggle.css';
 
-const ThemeToggle = () => {
-  const theme = useTheme();
-  const colorMode = useContext(ColorModeContext);
-
+const ThemeToggle = ({ theme, toggleTheme }) => {
   return (
-    <IconButton
-      onClick={colorMode.toggleColorMode}
-      aria-label="toggle theme"
-      sx={{
-        color: '#FFFF00', // Permanent yellow color
-        '&:hover': {
-          backgroundColor: 'rgba(255, 255, 0, 0.1)', // Light yellow background on hover
-        },
-        '& .MuiSvgIcon-root': {
-          color: '#FFFF00', // Ensure icons are yellow
-          fontSize: '3.5rem', // Increase icon size
-        },
-        padding: '22px', // Increase padding for larger clickable area
-        width: '70px', // Set button width
-        height: '70px', // Set button height
-      }}
-    >
-      {theme.palette.mode === 'dark' ? <LightMode /> : <DarkMode />}
-    </IconButton>
+    <div className="theme-toggle">
+      <input
+        type="checkbox"
+        id="theme-toggle-checkbox"
+        className="theme-toggle-checkbox"
+        onChange={toggleTheme}
+        checked={theme === 'dark'}
+      />
+      <label htmlFor="theme-toggle-checkbox" className="theme-toggle-label">
+        <span className="theme-toggle-inner"></span>
+        <span className="theme-toggle-switch"></span>
+      </label>
+    </div>
   );
 };
 

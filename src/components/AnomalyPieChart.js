@@ -8,7 +8,7 @@ const AnomalyPieChart = () => {
   const [anomalyData, setAnomalyData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://mock-api-jsia.onrender.com/DWLR_DATA')
+    axios.get('https://api-creation-1hfb.onrender.com/data')
       .then(res => {
         const counts = res.data.reduce((acc, curr) => {
           const key = curr.Anomaly || 'Normal';

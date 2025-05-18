@@ -1,18 +1,46 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/Dashboard.css';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/Sidebar.css';
+import { Droplet, AlertTriangle, BarChart2, FileText } from 'lucide-react';
 
 const Sidebar = () => {
+  const location = useLocation();
+  
+  // Function to check if a path is active
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
   return (
     <div className="sidebar">
       <h2>DWLR Portal</h2>
       <ul>
-        <li><Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Dashboard</Link></li>
-        <li><Link to="/anomaly" style={{ textDecoration: 'none', color: 'inherit' }}>Anomaly Detection</Link></li>
-        <li><Link to="/alert" style={{ textDecoration: 'none', color: 'inherit' }}>Alert</Link></li>
-        <li><Link to="/news" style={{ textDecoration: 'none', color: 'inherit' }}>News</Link></li>
+        <li className={isActive('/') ? 'active' : ''}>
+          <Link to="/">
+            <Droplet size={20} /> Dashboard
+          </Link>
+        </li>
+        <li className={isActive('/anomaly') ? 'active' : ''}>
+          <Link to="/anomaly">
+            <AlertTriangle size={20} /> Anomaly Detection
+          </Link>
+        </li>
+        <li className={isActive('/alert') ? 'active' : ''}>
+          <Link to="/alert">
+            <BarChart2 size={20} /> Alerts
+          </Link>
+        </li>
+        <li className={isActive('/news') ? 'active' : ''}>
+          <Link to="/news">
+            <FileText size={20} /> News
+          </Link>
+        </li>
       </ul>
+      <div className="sidebar-footer">
+        <div className="water-drop-animation">
+          <Droplet size={24} color="#4ECDC4" />
+        </div>
+      </div>
     </div>
   );
 };

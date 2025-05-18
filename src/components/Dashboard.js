@@ -1,121 +1,146 @@
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  useTheme,
-  IconButton,
-} from "@mui/material";
-import { Brightness7, DarkMode } from "@mui/icons-material";
-import StatBox from "../components/StatBox";
-import LineChart from "../components/LineChart";
-import BarChart from "../components/BarChart";
-import LeafletMap from "../components/LeafletMap";
-import RecentAlerts from "../components/RecentAlerts";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import '../styles/Dashboard.css';
+import { AlertTriangle, Droplet, TrendingUp, BarChart2 } from 'lucide-react';
 
-const Dashboard = ({ toggleTheme }) => {
-  const theme = useTheme();
+// Sample data generation function
+const generateSampleData = () => {
+  const sampleData = [];
+  for (let i = 1; i <= 6; i++) {
+    sampleData.push({
+      id: i,
+      location: `Location ${i}`,
+      waterLevel: Math.floor(Math.random() * 100),
+      change: (Math.random() * 10 - 5).toFixed(1),
+      timestamp: new Date().toISOString(),
+      anomaly: Math.random() > 0.7
+    });
+  }
+  return sampleData;
+};
+
+const Dashboard = () => {
   const [dwlrData, setDwlrData] = useState([]);
-  const [quote, setQuote] = useState("");
-
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("https://api-creation-1hfb.onrender.com/data");
-        // Add random coordinates for India if not provided
-        const dataWithCoords = res.data.map(item => ({
-          ...item,
-          lat: item.lat || (20.5937 + (Math.random() - 0.5) * 10), // Random lat around India
-          lng: item.lng || (78.9629 + (Math.random() - 0.5) * 20), // Random lng around India
-        }));
-        setDwlrData(dataWithCoords);
-      } catch (err) {
-        console.error("Error fetching DWLR data:", err);
-      }
-    };
-
-    const fetchQuote = async () => {
-      try {
-        const res = await axios.get("https://api.quotable.io/random?tags=wisdom|inspirational");
-        setQuote(res.data.content);
-      } catch (err) {
-        console.error("Error fetching quote:", err);
-        setQuote("Water is life. Preserve it.");
-      }
-    };
-
-    fetchData();
-    fetchQuote();
+    // Simulate API fetch with sample data
+    const data = generateSampleData();
+    setDwlrData(data);
+    
+    // Refresh data periodically to simulate real-time updates
+    const interval = setInterval(() => {
+      setDwlrData(generateSampleData());
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
-
-  const filteredData = dwlrData;
-  const totalDWLRs = filteredData.length;
-  const totalAnomalies = filteredData.filter((d) => d.anomaly).length;
+  
+  // Filters and stats calculation
+  const totalDWLRs = dwlrData.length;
+  const anomalies = dwlrData.filter(item => item.anomaly);
+  const totalAnomalies = anomalies.length;
+  const recentAlerts = [...anomalies].sort((a, b) => 
+    new Date(b.timestamp) - new Date(a.timestamp)
+  );
 
   return (
-    <Box sx={{ px: 3, py: 2 }} className="dashboard">
-      {/* Header */}
-      <Box
-        sx={{
-          bgcolor: theme.palette.mode === "dark" ? "#1e1e2f" : "#e0f7fa",
-          borderRadius: 2,
-          mb: 4,
-          px: 4,
-          py: 3,
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          width: "100%",
-        }}
-      >
-        {/* Title Row */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Typography variant="h4" fontWeight="bold">
-            DWLR Monitoring Dashboard
-          </Typography>
-          <IconButton onClick={toggleTheme} sx={{ ml: 2 }}>
-            {theme.palette.mode === "dark" ? <Brightness7 /> : <DarkMode />}
-          </IconButton>
-        </Box>
-
-        {/* Quote */}
-        <Box
-          sx={{
-            bgcolor: theme.palette.mode === "dark" ? "#333" : "#f1f8e9",
-            px: 3,
-            py: 1.5,
-            borderRadius: 2,
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="subtitle1" sx={{ fontStyle: "italic", color: "text.secondary" }}>
-            “{quote}”
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* KPIs */}
-      <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }} className="kpi-cards">
-        <StatBox title="DWLRs Monitored" value={totalDWLRs} />
-        <StatBox title="Anomalies Detected" value={totalAnomalies} />
-      </Box>
-
-      {/* Map */}
-      <Box sx={{ mb: 4 }}>
-        <LeafletMap data={filteredData} />
-      </Box>
-
-      {/* Charts */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 4 }} className="charts">
-        <LineChart data={filteredData} />
-        <BarChart data={filteredData} />
-      </Box>
-
-      {/* Alerts */}
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <RecentAlerts data={filteredData.filter((d) => d.anomaly)} />
-      </Box>
-    </Box>
+    <div className="dashboard-content">
+      {/* KPI Cards */}
+      <div className="kpi-cards">
+        <div className="card">
+          <div className="title">
+            <Droplet size={18} className="icon" /> DWLRs Monitored
+          </div>
+          <div className="value">{totalDWLRs}</div>
+          <div className="percentage">
+            <TrendingUp size={14} /> Active and reporting
+          </div>
+        </div>
+        
+        <div className="card">
+          <div className="title">
+            <AlertTriangle size={18} className="icon" /> Anomalies Detected
+          </div>
+          <div className="value">{totalAnomalies}</div>
+          <div className="percentage">
+            <TrendingUp size={14} /> {Math.round((totalAnomalies / totalDWLRs) * 100)}% of total
+          </div>
+        </div>
+        
+        <div className="card">
+          <div className="title">
+            <BarChart2 size={18} className="icon" /> Average Water Level
+          </div>
+          <div className="value">
+            {Math.round(dwlrData.reduce((acc, curr) => acc + curr.waterLevel, 0) / totalDWLRs)}%
+          </div>
+          <div className="percentage">
+            <TrendingUp size={14} /> Updated live
+          </div>
+        </div>
+      </div>
+      
+      {/* Charts Section */}
+      <div className="charts">
+        <div className="chart-container">
+          <h3>Water Level Trends</h3>
+          <div className="chart-placeholder">
+            {/* Placeholder for actual chart */}
+            <div className="animated-chart">
+              {dwlrData.map((item, index) => (
+                <div 
+                  key={item.id} 
+                  className="chart-bar" 
+                  style={{ 
+                    height: `${item.waterLevel}%`,
+                    animationDelay: `${index * 0.1}s`
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div className="chart-container">
+          <h3>Anomaly Distribution</h3>
+          <div className="chart-placeholder">
+            {/* Placeholder for actual chart */}
+            <div className="pie-chart-placeholder">
+              <div className="pie-segment" style={{ transform: `rotate(${totalAnomalies/totalDWLRs * 360}deg)` }}></div>
+              <div className="pie-center">
+                <span>{Math.round((totalAnomalies / totalDWLRs) * 100)}%</span>
+              </div>
+            </div>
+            <div className="pie-legend">
+              <div className="legend-item">
+                <span className="legend-color normal"></span> Normal
+              </div>
+              <div className="legend-item">
+                <span className="legend-color anomaly"></span> Anomaly
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Recent Alerts */}
+      <div className="recent-alerts">
+        <h3>Recent Alerts</h3>
+        <ul>
+          {recentAlerts.length > 0 ? (
+            recentAlerts.map(alert => (
+              <li key={alert.id} className="alert-item">
+                <strong>{alert.location}</strong> - Anomaly detected at water level {alert.waterLevel}%
+                <div className="alert-time">
+                  {new Date(alert.timestamp).toLocaleTimeString()} - {new Date(alert.timestamp).toLocaleDateString()}
+                </div>
+              </li>
+            ))
+          ) : (
+            <li>No recent alerts</li>
+          )}
+        </ul>
+      </div>
+    </div>
   );
 };
 
