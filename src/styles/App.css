@@ -252,3 +252,17 @@ button:active {
     justify-content: flex-end;
   }
 }
+
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+    padding-bottom: 60px; /* Space for fixed sidebar */
+  }
+  
+  .dashboard {
+    height: calc(100vh - 60px); /* Adjust height to avoid overlap */
+    width: 100%;
+    margin-left: 0;
+    padding-bottom: 60px; /* Ensure content scrolls above sidebar */
+  }
+}

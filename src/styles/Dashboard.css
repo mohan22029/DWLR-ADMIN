@@ -515,3 +515,20 @@
     background-position: 15% 5%, 85% 105%, 55% 45%;
   }
 }
+@media (max-width: 768px) {
+  .dashboard {
+    padding-bottom: 60px; /* Space for bottom sidebar */
+  }
+}
+.map-container {
+  margin-top: 20px;
+  height: 400px; /* Default height for desktop */
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    height: 300px; /* Reduced height for mobile */
+    width: 100%;
+  }
+}
