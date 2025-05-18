@@ -6,24 +6,48 @@ const SensorStatusBarChart = () => {
   const [barData, setBarData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://mock-api-jsia.onrender.com/DWLR_DATA')
-      .then(res => {
-        const grouped = {};
-        res.data.forEach(item => {
-          if (!grouped[item.District]) {
-            grouped[item.District] = { Normal: 0, Alert: 0 };
-          }
-          item.Anomaly === "Normal" ? grouped[item.District].Normal++ : grouped[item.District].Alert++;
+    const fetchData = () => {
+      axios.get('https://api-creation-2-gntq.onrender.com/data')
+        .then(res => {
+          const districts = ["Agarmalwa", "Alirajpur", "Shivpuri", "Anuppur"];
+          const grouped = {};
+
+          districts.forEach(d => {
+            grouped[d] = { Normal: 0, Alert: 0 };
+          });
+
+          res.data.forEach(item => {
+            const district = item.District;
+            if (districts.includes(district)) {
+              if (item.Anomaly && item.Anomaly.toLowerCase() === "no") {
+                grouped[district].Normal++;
+              } else {
+                grouped[district].Alert++;
+              }
+            }
+          });
+
+          console.log("Grouped data:", grouped);
+
+          const data = districts.map(district => ({
+            name: district,
+            Normal: grouped[district].Normal,
+            Alert: grouped[district].Alert,
+          }));
+
+          console.log("Bar data:", data);
+
+          setBarData(data);
+        })
+        .catch(err => {
+          console.error("Error fetching data:", err);
         });
+    };
 
-        const data = Object.entries(grouped).map(([district, values]) => ({
-          name: district,
-          Normal: values.Normal,
-          Alert: values.Alert
-        }));
+    fetchData();
+    const interval = setInterval(fetchData, 2000);
 
-        setBarData(data);
-      });
+    return () => clearInterval(interval);
   }, []);
 
   return (

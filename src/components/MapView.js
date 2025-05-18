@@ -1,24 +1,39 @@
 import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import axios from "axios";
+
+// Fix default icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+
+// Define a custom circle icon using SVG
+const customIcon = new L.DivIcon({
+  html: `
+    <svg height="24" width="24" viewBox="0 0 24 24" style="transform: translate(-12px, -24px);">
+      <circle cx="12" cy="12" r="10" fill="#2A9D8F" stroke="white" stroke-width="2" />
+    </svg>
+  `,
+  className: "",
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+});
 
 const MapView = () => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const [dwlrs, setDwlrs] = useState([]);
+  const [telemetryData, setTelemetryData] = useState({});
 
   useEffect(() => {
-    const fetchDWLRData = async () => {
+    const fetchTelemetryData = async () => {
       try {
-        const response = await axios.get("https://mock-api-jsia.onrender.com/DWLR_DATA");
-        setDwlrs(response.data);
+        const response = await fetch('/district_telemetry_data1.json');
+        const data = await response.json();
+        setTelemetryData(data);
       } catch (error) {
-        console.error("Error fetching DWLR data:", error);
+        console.error("Error fetching telemetry data:", error);
       }
     };
 
-    fetchDWLRData();
+    fetchTelemetryData();
   }, []);
 
   useEffect(() => {
@@ -39,25 +54,34 @@ const MapView = () => {
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
       subdomains: "abcd",
       maxZoom: 19,
     }).addTo(map);
   }, []);
 
   useEffect(() => {
-    if (!mapInstanceRef.current || dwlrs.length === 0) return;
+    if (!mapInstanceRef.current || Object.keys(telemetryData).length === 0) return;
 
-    dwlrs.forEach((d) => {
-      if (d.latitude && d.longitude) {
-        L.marker([d.latitude, d.longitude])
-          .addTo(mapInstanceRef.current)
-          .bindPopup(
-            `<b>${d.location}</b><br/>Water Level: ${d.water_level} m<br/>Status: ${d.status}`
-          );
-      }
+    Object.entries(telemetryData).forEach(([district, info]) => {
+      info.telemetries.forEach((tele, index) => {
+        if (tele.latitude && tele.longitude) {
+          const marker = L.marker([tele.latitude, tele.longitude], { icon: customIcon })
+            .addTo(mapInstanceRef.current);
+
+          marker.bindTooltip(tele.uid);
+
+          marker.bindPopup(`
+            <div>
+              <strong>Telemetry UID:</strong> ${tele.uid}<br />
+              <strong>District:</strong> ${district}<br />
+              <strong>Avg Water Level (m):</strong> ${tele.avg_water_level}
+            </div>
+          `);
+        }
+      });
     });
-  }, [dwlrs]);
+  }, [telemetryData]);
 
   return (
     <div
