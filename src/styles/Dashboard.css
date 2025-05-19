@@ -1,4 +1,5 @@
 /* src/styles/Dashboard.css */
+
 /* Main Dashboard Layout */
 .dashboard {
   flex: 1;
@@ -10,9 +11,12 @@
   transition: all 0.3s ease;
   min-height: 100vh;
   position: relative;
+  margin-left: 2px; /* Match the 2px sidebar width in laptop view */
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* Sidebar */
+/* Sidebar (from Dashboard.css, but overridden by Sidebar.css in laptop view) */
 .sidebar {
   width: 280px;
   background: linear-gradient(180deg, #0a2342 0%, #162a47 100%);
@@ -28,6 +32,29 @@
   animation: slideInLeft 0.5s ease-out forwards;
 }
 
+/* Ensure hamburger icon is styled consistently */
+.hamburger {
+  width: 30px !important;
+  min-width: 30px;
+  display: flex !important;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 18px;
+  cursor: pointer;
+  z-index: 1101;
+}
+
+.hamburger div {
+  background: #4ECDC4;
+  height: 3px;
+  border-radius: 3px;
+  width: 100%;
+}
+
+/* Rest of the sidebar styles remain unchanged */
 @keyframes slideInLeft {
   from {
     transform: translateX(-30px);
@@ -445,8 +472,12 @@
   }
   
   .dashboard {
-    margin-left: 70px;
-    width: calc(100% - 70px);
+    margin-left: 0; /* No margin when sidebar is hidden */
+    width: 100%;
+  }
+  
+  .sidebar.active + .dashboard {
+    margin-left: 30px; /* Match Sidebar.css width when active */
   }
   
   .header {
@@ -484,6 +515,12 @@
   }
 }
 
+@media (max-width: 480px) {
+  .sidebar.active + .dashboard {
+    margin-left: 20px; /* Match Sidebar.css width when active */
+  }
+}
+
 /* Water droplet animation */
 .dashboard::before {
   content: '';
@@ -515,11 +552,13 @@
     background-position: 15% 5%, 85% 105%, 55% 45%;
   }
 }
+
 @media (max-width: 768px) {
   .dashboard {
     padding-bottom: 60px; /* Space for bottom sidebar */
   }
 }
+
 .map-container {
   margin-top: 20px;
   height: 400px; /* Default height for desktop */
@@ -531,4 +570,59 @@
     height: 300px; /* Reduced height for mobile */
     width: 100%;
   }
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  width: 100%;
+}
+
+.dashboard-sidebar {
+  width: 240px;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-main-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile overrides */
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard-sidebar.active {
+    display: block;
+    width: 240px;
+    animation: slideInLeft 0.3s ease-out forwards;
+    position: absolute;
+    z-index: 101;
+  }
+
+  .dashboard-main-content {
+    padding: 15px;
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 99;
+  display: none;
+}
+
+.sidebar-overlay.active {
+  display: block;
 }
