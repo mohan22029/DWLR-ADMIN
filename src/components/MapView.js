@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import './MapView.css';
+
 
 // Fix default icon issue
 delete L.Icon.Default.prototype._getIconUrl;

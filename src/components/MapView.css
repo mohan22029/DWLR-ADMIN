@@ -1,0 +1,24 @@
+/* Default styles for all screens */
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+/* Responsive for screens below 768px */
+@media screen and (max-width: 768px) {
+  #map {
+    height: 240px; /* Shrink height for mobile */
+    margin-left: 30px; /* Avoid sidebar overlap */
+  }
+}
+
+/* Extra narrow mobile screens */
+@media screen and (max-width: 480px) {
+  #map {
+    height: 220px;
+    margin-left: 20px; /* Match sidebar width */
+  }
+}
