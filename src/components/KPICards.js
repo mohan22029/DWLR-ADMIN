@@ -6,13 +6,13 @@ const KPICards = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://mock-api-jsia.onrender.com/DWLR_DATA')
+    axios.get('https://api-creation-2-gntq.onrender.com/data')
       .then(res => setData(res.data))
       .catch(err => console.log(err));
   }, []);
 
   const uniqueSensors = new Set(data.map(item => item.Telemetry_UID)).size;
-  const totalAnomalies = data.filter(item => item.Anomaly !== 'Normal').length;
+  const totalAnomalies = data.filter(item => item.Anomaly == 'Yes').length;
   const locations = new Set(data.map(item => item.District)).size;
 
   return (
@@ -20,7 +20,6 @@ const KPICards = () => {
       <div className="card">DWLRs Monitored: {uniqueSensors}</div>
       <div className="card">Anomalies Detected: {totalAnomalies}</div>
       <div className="card">Locations Reporting: {locations}</div>
-      <div className="card">Alerts Triggered: {totalAnomalies}</div>
     </div>
   );
 };
