@@ -33,10 +33,10 @@ const Header = ({ theme, toggleTheme }) => {
   return (
     <div className="header">
       <div className="header-left">
-        <h1>
+        <h1 class="headerh1">
           <Droplet size={24} className="header-icon" /> DWLR Dashboard
         </h1>
-        <p>Welcome, Water Board Admin • {currentDate}</p>
+        <p class="dummyb">Welcome, Water Board Admin • {currentDate}</p>
       </div>
       <div className="header-right">
         <blockquote className="quote-of-the-day">💧 {quote}</blockquote>

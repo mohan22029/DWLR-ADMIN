@@ -29,10 +29,11 @@
 .header-left {
   flex: 1;
   min-width: 250px;
+  margin-bottom: 10px;
 }
 
 .header-left h1 {
-  margin: 0;
+  margin-bottom: 20px !important;
   font-size: 2.2rem;
   font-weight: 700;
   background: linear-gradient(90deg, #ffffff, #63ADF2);
@@ -41,6 +42,10 @@
   background-clip: text;
   letter-spacing: 0.5px;
   position: relative;
+}
+
+.dummyb{
+  margin-top: 30px;
 }
 
 .header-left h1::after {
@@ -55,10 +60,12 @@
 }
 
 .header-left p {
-  margin: 1rem 0 0;
+  /* margin: 1rem 0 0; */
   font-size: 1.1rem;
   color: #a3c2e3;
   font-weight: 500;
+  margin-top: 13px;
+
 }
 
 .header-right {
@@ -165,7 +172,8 @@
   }
   
   .header-left p {
-    font-size: 1rem;
+    font-size: 1.5rem;
+    margin-top: 12px;
   }
   
   .quote-of-the-day {
