@@ -53,7 +53,7 @@ const SensorStatusBarChart = () => {
   return (
     <div className="chart-container">
       <h3>Sensor Health by District</h3>
-      <BarChart width={500} height={250} data={barData}>
+      <BarChart width={700} height={250} data={barData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />

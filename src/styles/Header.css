@@ -177,6 +177,12 @@
     flex-direction: column;
     align-items: flex-start;
   }
+  .header{
+    margin-top:30px;
+  }
+  .recharts-surface{
+    overflow: scroll;
+  }
 }
 
 /* Light mode adjustments */

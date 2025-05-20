@@ -10,13 +10,11 @@ const AnomalyPieChart = () => {
   useEffect(() => {
     axios.get('https://api-creation-2-gntq.onrender.com/data')
       .then(res => {
-        // Count anomalies based on "Yes" or "No"
         const counts = res.data.reduce((acc, curr) => {
           const key = curr.Anomaly === "Yes" ? "Alert" : "Normal";
           acc[key] = acc[key] ? acc[key] + 1 : 1;
           return acc;
         }, {});
-        // Convert to pie chart data format
         const pieData = Object.entries(counts).map(([name, value]) => ({ name, value }));
         setAnomalyData(pieData);
       })
@@ -24,7 +22,7 @@ const AnomalyPieChart = () => {
   }, []);
 
   return (
-    <div className="chart-container">
+    <div className="chart-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h3>Anomaly Type Distribution</h3>
       <PieChart width={300} height={250}>
         <Pie
@@ -33,7 +31,7 @@ const AnomalyPieChart = () => {
           nameKey="name"
           cx="50%"
           cy="50%"
-          outerRadius={70}
+          outerRadius={100}
         >
           {anomalyData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
