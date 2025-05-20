@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./styles/App.css";
-import "./index.css";
-
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import KPICards from "./components/KPICards";
@@ -18,22 +16,16 @@ import axios from "axios";
 import Predict from "./components/Prediction";
 
 function App() {
-  
-  // Theme toggle using localStorage
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'dark';
   });
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [dwlrData, setDwlrData] = useState([]);
+
   useEffect(() => {
     localStorage.setItem('theme', theme);
   }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
-
-  // DWLR data state
-  const [dwlrData, setDwlrData] = useState([]);
 
   useEffect(() => {
     axios.get("https://mock-api-jsia.onrender.com/DWLR_DATA")
@@ -41,10 +33,19 @@ function App() {
       .catch((err) => console.error("Error fetching data:", err));
   }, []);
 
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const toggleSidebar = () => {
+    console.log('App: Toggling sidebar, new state:', !isSidebarOpen);
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <Router>
       <div className={`app ${theme}`}>
-        <Sidebar />
+        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <main className="dashboard">
           <Header theme={theme} toggleTheme={toggleTheme} />
           <Routes>
@@ -59,7 +60,7 @@ function App() {
                     <AnomalyPieChart data={dwlrData} />
                     <SensorStatusBarChart data={dwlrData} />
                   </div>
-
+                 
                 </>
               }
             />
@@ -68,7 +69,6 @@ function App() {
             <Route path="/anomaly" element={<AnomalyFeature />} />
             <Route path="/predict" element={<Predict />} />
             <Route path="*" element={<div>Page Not Found</div>} />
-
           </Routes>
         </main>
       </div>
